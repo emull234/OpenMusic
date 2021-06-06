@@ -9,7 +9,7 @@ class SongsService {
     this._pool = new Pool();
   }
 
-  async addSongs({
+  async addSong({
     title,
     year,
     performer,
@@ -21,10 +21,9 @@ class SongsService {
     const updatedAt = insertedAt;
 
     const query = {
-      text: 'INSERT INTO songs VALUES ($1, $2, $3, $4, $5, $6, $7, $8,) RETURNING id',
+      text: 'INSERT INTO songs VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
       values: [id, title, year, performer, genre, duration, insertedAt, updatedAt],
     };
-
     const result = await this._pool.query(query);
 
     if (!result.rows[0].id) {
@@ -36,9 +35,6 @@ class SongsService {
 
   async getSongs() {
     const result = await this._pool.query('SELECT * FROM songs');
-    if (!result.rows.length) {
-      return [];
-    }
     return result.rows.map(mapGetAll);
   }
 
@@ -51,7 +47,7 @@ class SongsService {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new InvariantError('Lagu tidak ditemukan');
+      throw new NotFoundError('Lagu tidak ditemukan');
     }
 
     return result.rows.map(mapGetDetail)[0];

@@ -4,7 +4,11 @@ class SongsHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
+    this.getSongsHandler = this.getSongsHandler.bind(this);
+    this.getSongByIdHandler = this.getSongByIdHandler.bind(this);
     this.postSongHandler = this.postSongHandler.bind(this);
+    this.putSongByIdHandler = this.putSongByIdHandler.bind(this);
+    this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
   }
 
   async getSongsHandler() {
@@ -54,6 +58,7 @@ class SongsHandler {
       const songId = await this._service.addSong({
         title, year, performer, genre, duration,
       });
+      console.log(songId);
 
       const response = h.response({
         status: 'success',
@@ -75,7 +80,7 @@ class SongsHandler {
       }
       const response = h.response({
         status: 'error',
-        Message: 'Maaf terjadi kesalahan pada server kami',
+        Message: error.message,
       });
       response.code(500);
       return response;
