@@ -1,4 +1,8 @@
 const Hapi = require('@hapi/hapi');
+const songs = require('./api/song');
+const songsService = require('./services/postgres/songsService');
+const SongValidator = require('./validator/songs');
+require('dotenv').config();
 
 const init = async () => {
   const server = Hapi.server({
@@ -11,10 +15,12 @@ const init = async () => {
     },
   });
 
-  server.route({
-    method: 'GET',
-    path: '/',
-    handler: () => 'Welcome to OpenMusic',
+  await server.register({
+    plugin: songs,
+    options: {
+      service: songsService,
+      validator: SongValidator,
+    },
   });
 
   await server.start();
